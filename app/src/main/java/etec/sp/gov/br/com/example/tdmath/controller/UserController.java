@@ -4,10 +4,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 
 import etec.sp.gov.br.com.example.tdmath.model.Banco;
 
@@ -16,17 +18,67 @@ public class UserController {
     private SQLiteDatabase db;
     private final Banco bd;
 
-    public UserController(Context context){
+    public UserController(Context context) {
         bd = new Banco(context);
     }
+    public void consultaUsers() {
+        ArrayList<String> lista = new ArrayList<>();
 
-    public String cadastro(String nome, String email, String senha) {
+        db = bd.getReadableDatabase();
+        Cursor dados = null;
+        try {
+            dados = db.query("usuario", null, null, null, null, null, null);
+            if (dados.moveToFirst()) {
+                do {
+                    int id = dados.getInt(dados.getColumnIndexOrThrow("idUser"));
+                    String email = dados.getString(dados.getColumnIndexOrThrow("email"));
+                    String name = dados.getString(dados.getColumnIndexOrThrow("nome"));
+                    int mapaAtual = dados.getInt(dados.getColumnIndexOrThrow("mapaAtual"));
+
+                    String info = "ID: " + id +
+                            ", Email: " + email +
+                            ", nome: " + name +
+                            ", Mapa Atual: " + mapaAtual;
+
+                    lista.add(info);
+                    Log.d("UserController", info);
+                } while (dados.moveToNext());
+            } else {
+                Log.d("UserController", "Nenhum usuário encontrado.");
+            }
+        } catch (Exception e) {
+            Log.e("UserController", "Erro ao consultar usuários: " + e.getMessage());
+        } finally {
+            if (dados != null) dados.close();
+            db.close();
+        }
+        Log.d("usuarios", "consultaUsers: " + lista);
+    }
+
+    public Boolean cadastro(String nome, String email, String senha) {
+        db = bd.getWritableDatabase();
+
+        Cursor cursor = db.query(
+                "usuario",
+                new String[]{"idUser"},
+                "email = ?",
+                new String[]{email.toLowerCase()},
+                null, null, null
+        );
+
+        if (cursor.moveToFirst()) {
+            cursor.close();
+            db.close();
+            return false; // usuário já existe
+        }
+        cursor.close();
+
+        String senhaHash;
         //classe android, funciona como container de pares chave-valor("senha", senha)
         ContentValues values;
         //metodo insert vai devolver result do tipo long
         long resultado;
 
-        String senhaHash;
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-512");
             byte[] digest = md.digest(senha.getBytes("UTF-8"));
@@ -39,19 +91,20 @@ public class UserController {
             throw new RuntimeException("Erro ao gerar hash da senha", e);
         }
 
-        db = bd.getWritableDatabase();
         values = new ContentValues();
         values.put("nome", nome.toLowerCase());
         values.put("email", email.toLowerCase());
         values.put("senhaHash", senhaHash);
 
         resultado = db.insert("usuario",null,values);
+        Log.e("CADASTRO_DEBUG", "Resultado insert: " + resultado + " | Email: " + email);
+
         db.close();
 
         if (resultado == -1){
-            return "Erro ao inserir registro";
+            return false;
         } else {
-            return "registro Inserido com sucesso";
+            return true;
         }
     }
 

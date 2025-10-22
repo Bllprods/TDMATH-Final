@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,6 +25,7 @@ import androidx.core.view.WindowInsetsCompat;
 import etec.sp.gov.br.com.example.tdmath.controller.UserController;
 import etec.sp.gov.br.com.example.tdmath.model.Banco;
 import etec.sp.gov.br.com.example.tdmath.R;
+import etec.sp.gov.br.com.example.tdmath.model.Mapa;
 
 public class Login extends AppCompatActivity {
     private SQLiteDatabase db;
@@ -43,11 +45,14 @@ public class Login extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        UserController crud = new UserController(getBaseContext());
+        crud.consultaUsers();
 
         SharedPreferences sharedPref = getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
         int fontSize = sharedPref.getInt("font_size", 16); // 16 é o valor padrão caso ainda não tenha salvo
         Config.updateFontSize(findViewById(R.id.main), fontSize);
 
+        BtnLog = findViewById(R.id.btnLog);
         BtnCad = findViewById(R.id.btnCad);
         BtnVoltarL = findViewById(R.id.btnVL);
         edtSenha = findViewById(R.id.edtSenha);
@@ -64,7 +69,6 @@ public class Login extends AppCompatActivity {
         BtnLog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UserController crud = new UserController(getBaseContext());
                 String user = edtUserl.getText().toString();
                 String senha = edtSenha.getText().toString();
                 boolean resultado;

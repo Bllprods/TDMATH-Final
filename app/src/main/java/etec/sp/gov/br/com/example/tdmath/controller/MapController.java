@@ -19,15 +19,18 @@ public class MapController {
     public MapController(Context context){
         bd = new Banco(context);
     }
+
     public ArrayList<Mapa> consultaMapas(){
         ArrayList<Mapa> lista = new ArrayList<>();
 
         db = bd.getReadableDatabase();
-        Cursor dados = db.query("mapa", null, null, null, null, null, null);
+        Cursor dados = null;
+        try {
+            dados = db.query("mapa", null, null, null, null, null, null);
 
-        //acho que funciona tipo foreach
-        if (dados.moveToFirst()){
-            do {
+            //acho que funciona tipo foreach
+            if (dados.moveToFirst()) {
+                do {
                     @SuppressLint("Range")
                     int id = dados.getInt(dados.getColumnIndex("idMapa"));
                     @SuppressLint("Range")
@@ -35,13 +38,21 @@ public class MapController {
                     @SuppressLint("Range")
                     String img = dados.getString((dados.getColumnIndex("ImgUrlMap")));
                     lista.add(new Mapa(id, nome, img));
-            } while (dados.moveToNext());
-        }else {
-            return null;
+                } while (dados.moveToNext());
+            }
+            for (Mapa m : lista) {
+                Log.d("MapController", "ID: " + m.getIdMapa() +
+                        ", Nome: " + m.getNome() +
+                        ", Img: " + m.getImgUrlMap());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            if(dados != null) {
+                dados.close();
+                db.close();
+            }
         }
-        dados.close();
-        db.close();
         return lista;
     }
-
 }

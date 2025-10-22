@@ -1,5 +1,6 @@
 package etec.sp.gov.br.com.example.tdmath.telas;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -32,6 +33,7 @@ public class Config extends AppCompatActivity {
     SeekBar brTfont, brAsom;
     TextView resultadoSom, resultadoText;
 
+    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,10 +64,12 @@ public class Config extends AppCompatActivity {
 
         // Carregar tamanho da fonte salvo
         SharedPreferences sharedPref = getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
-        TextFont = sharedPref.getInt("font_size", 18);
+        TextFont = sharedPref.getInt("font_size", 25);
 
         // Atualizar a SeekBar e o TextView
-        brTfont.setProgress(TextFont - 10);
+        brTfont.setMin(25);
+        brTfont.setMax(50);
+        brTfont.setProgress(TextFont);
 
         BtnVoltar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,7 +136,7 @@ public class Config extends AppCompatActivity {
 
                                 SharedPreferences sharedPref = getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPref.edit();
-                                editor.putInt("font_size", TextFont + 10);
+                                editor.putInt("font_size", TextFont);
                                 editor.apply();
 
 

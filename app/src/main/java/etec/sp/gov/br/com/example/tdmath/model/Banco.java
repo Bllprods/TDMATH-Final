@@ -1,6 +1,7 @@
 package etec.sp.gov.br.com.example.tdmath.model;
 
 import android.content.Context;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -9,23 +10,22 @@ import androidx.annotation.Nullable;
 public class Banco extends SQLiteOpenHelper {
     //https://www.devmedia.com.br/criando-um-crud-com-android-studio-e-sqlite/32815
     private static final String nomeBd = "tdmath.db";
-    private static final Integer versaoBd = 1;
+    private static final Integer versaoBd = 2;
     public Banco(@Nullable Context context) {
         super(context, nomeBd, null, versaoBd);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("PRAGMA foreign_keys=ON;");
-
         db.execSQL("CREATE TABLE IF NOT EXISTS usuario(" +
                 "idUser INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "nome VARCHAR(150) NOT NULL," +
                 "email VARCHAR(150) NOT NULL UNIQUE," +
                 "senhaHash VARCHAR(250) NOT NULL," +
                 "pontuacaoTotal int default 0," +
                 "mapaAtual int default 1" +
                 ")");
-        db.execSQL("CREATE TABLE IF NOT EXISTS conquistaBase(" +
+        db.execSQL("CREATE TABLE IF NOT EXISTS conquista(" +
                 "idConq INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "nome VARCHAR(100) NOT NULL," +
                 "descricao TEXT NOT NULL," +
@@ -71,6 +71,12 @@ public class Banco extends SQLiteOpenHelper {
                 "FOREIGN KEY (fkIdUser) REFERENCES usuario(idUser)," +
                 "FOREIGN KEY (fkIdConq) REFERENCES conquista(idConq)" +
                 ")");
+        OnInit(db);
+    }
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        db.execSQL("PRAGMA foreign_keys=ON;");
     }
 
     @Override
@@ -85,5 +91,32 @@ public class Banco extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS conquistaUser");
         onCreate(db);
     }
+    private void OnInit(SQLiteDatabase db){
+        // iniciando multipla transação de dados
+        // ideal para evitar lentidão, basicamente fazendo um unico acesso ao banco
+        // ao invés de um para cada inserção
+        db.beginTransaction();
+        try { // tentar codigo
+            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('soma', 'imgmap1');");
+            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('subtracao', 'imgmap2');");
+            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('soma-subtracao', 'imgmap3');");
+            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('memorizacao', 'imgmap4');"); // tabuada
+            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('multiplicacao', 'imgmap5');");
+            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('divisao', 'imgmap6');");
+            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('soma-subtracao-mult', 'imgmap7');");
+            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('mult-div', 'imgmap8');");
+            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('fracao', 'imgmap9');");
+            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('relacoes', 'imgmap10');");
+            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('numeros-prim', 'imgmap11');");
+            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('geometria', 'imgmap12');");
+            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('junta', 'imgmap13');"); // combinações de calculos
+            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('prova', 'imgmap14');"); // revisão final
 
+            db.setTransactionSuccessful();
+        } catch (SQLException e) { //tratar erro
+            throw new RuntimeException(e);
+        } finally { // ação que sempre acontece
+            db.endTransaction(); // fecha e envia o acesso ao banco
+        }
+    }
 }

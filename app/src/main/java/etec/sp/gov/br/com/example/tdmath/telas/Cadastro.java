@@ -53,6 +53,8 @@ public class Cadastro extends AppCompatActivity {
         int fontSize = sharedPref.getInt("font_size", 16);
         Config.updateFontSize(findViewById(R.id.main), fontSize);
 
+        BtnVolc = findViewById(R.id.btnVolt);
+        BtnCadc = findViewById(R.id.btnCadc);
         edtUser = findViewById(R.id.edtTxtUsername);
         edtEmail = findViewById(R.id.edtEmail);
         edtSenha = findViewById(R.id.edtSenha);
@@ -77,16 +79,32 @@ public class Cadastro extends AppCompatActivity {
                     String user = edtUser.getText().toString();
                     String email = edtEmail.getText().toString();
                     String senha = edtSenha.getText().toString();
-                    String resultado;
+                    //String cadastro;
                     try {
-                        resultado = crud.cadastro(user, email, senha);
+                        //cadastro = String.valueOf(crud.cadastro(user, email, senha));
+                        if (crud.cadastro(user, email, senha)){
+                            Intent log = new Intent( Cadastro.this, Login.class);
+                            startActivity(log);
+                        } else {
+                            AlertDialog erro = new AlertDialog.Builder(Cadastro.this).create();
+                            erro.setTitle("ERRO");
+                            erro.setMessage("usuario já cadastrado");
+                            erro.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    });
+                            erro.show();
+                        }
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 } else {
                     AlertDialog erro = new AlertDialog.Builder(Cadastro.this).create();
                     erro.setTitle("ERRO");
-                    erro.setMessage("erro no cadastro!!!!");
+                    erro.setMessage("Insira todos os dados");
                     erro.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
                             new DialogInterface.OnClickListener() {
                                 @Override
