@@ -131,24 +131,37 @@ public class MenuFases extends BaseActivity {
         );
         containerMini.setOrientation(LinearLayout.VERTICAL);
 
-        LinearParams.setMargins(15,15,15,15);
-        LinearParams.gravity = Gravity.CENTER_HORIZONTAL;
-        containerMini.setLayoutParams(LinearParams);
-        containerMini.setOnClickListener(v -> {
-            Intent fase = new Intent(this, tela_jogos.class);
-            startActivity(fase);
-        });
+            LinearParams.setMargins(15,15,15,15);
+            LinearParams.gravity = Gravity.CENTER_HORIZONTAL;
+            containerMini.setLayoutParams(LinearParams);
+            containerMini.setOnClickListener(v -> {
+                AlertDialog mundo = new AlertDialog.Builder(this).create();
+                mundo.setTitle(m.getNome());
+                mundo.setMessage("este é o Mundo" + m.getNome() + "\n Imagem: " +m.getImgUrlMap());
+                mundo.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
-        ImageButton MundoBtn = new ImageButton(this);
-        int RecursoImg = getResources().getIdentifier(m.getImgUrlMap(), "drawable", getPackageName());
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(400, 200);
-        params.gravity = Gravity.CENTER_HORIZONTAL;
-        params.setMargins(8, 8, 8, 8);
-        MundoBtn.setId(m.getIdMapa());
-        MundoBtn.setBackgroundResource(RecursoImg);
-        MundoBtn.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        MundoBtn.setLayoutParams(params);
-        MundoBtn.setClickable(false);
+                            }
+                        });
+                mundo.show();
+            });
+
+            ImageButton MundoBtn = new ImageButton( this);
+            int RecursoImg = getResources().getIdentifier(m.getImgUrlMap(), "drawable", getPackageName());
+            //procura pelo nome, devolve o id
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    400,// largura
+                    200 // altura
+            );
+            params.gravity = Gravity.CENTER_HORIZONTAL;
+            params.setMargins(8, 8, 8, 8);
+            MundoBtn.setId(m.getIdMapa());
+            MundoBtn.setBackgroundResource(RecursoImg); // adicionando o id da imagem
+            MundoBtn.setScaleType(ImageView.ScaleType.CENTER_CROP); // ou FIT_CENTER
+            MundoBtn.setLayoutParams(params); // adicionando os parametros do botão
+            MundoBtn.setClickable(false);
 
         TextView MundoTxt = new TextView(this);
         MundoTxt.setText(m.getNome());

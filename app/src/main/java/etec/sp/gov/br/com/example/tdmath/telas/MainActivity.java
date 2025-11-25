@@ -19,8 +19,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import etec.sp.gov.br.com.example.tdmath.R;
-import etec.sp.gov.br.com.example.tdmath.controller.BaseActivity;
-import etec.sp.gov.br.com.example.tdmath.controller.UserController;
 import etec.sp.gov.br.com.example.tdmath.model.Banco;
 
 public class MainActivity extends BaseActivity {
@@ -46,8 +44,6 @@ public class MainActivity extends BaseActivity {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-        UserController user = new UserController(getBaseContext());
 
         SharedPreferences sharedPref = getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
         int fontSize = sharedPref.getInt("font_size", 16);
