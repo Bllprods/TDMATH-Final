@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--https://developer.android.com/develop/ui/views/components/menus?hl=pt-br-->
+    <!--app:showAsAction="never" aparece apenas como menu flutuante -->
+    <item
+        android:id="@+id/ConqMi"
+        android:icon="@android:drawable/btn_star_big_on"
+        android:title="Conquistas"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/ConfMi"
+        android:icon="@android:drawable/ic_menu_manage"
+        android:title="configuração" />
+
+</menu>

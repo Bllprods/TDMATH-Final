@@ -23,8 +23,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import etec.sp.gov.br.com.example.tdmath.R;
+import etec.sp.gov.br.com.example.tdmath.controller.BaseActivity;
 
-public class Config extends AppCompatActivity {
+public class Config extends BaseActivity {
 
 
     int Volume, volumeAtual, maxVolumeSistema;
@@ -64,12 +65,14 @@ public class Config extends AppCompatActivity {
 
         // Carregar tamanho da fonte salvo
         SharedPreferences sharedPref = getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
-        TextFont = sharedPref.getInt("font_size", 25);
+        TextFont = sharedPref.getInt("font_size", 20);
 
         // Atualizar a SeekBar e o TextView
         brTfont.setMin(20);
         brTfont.setMax(30);
         brTfont.setProgress(TextFont);
+
+        updateFontSize(findViewById(R.id.main), TextFont);
 
         BtnVoltar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,5 +174,9 @@ public class Config extends AppCompatActivity {
         // atualizar layout
         // https://medium.com/kotlin-android-chronicle/understanding-the-roles-of-requestlayout-and-invalidate-when-adding-a-view-in-android-93d47be50e1f
         view.requestLayout();
+    }
+    protected int getcodeAct() {
+        // manda o codigo desta activity
+        return 3; // MainActivity toca música 1
     }
 }

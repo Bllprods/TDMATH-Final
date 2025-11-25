@@ -1,6 +1,7 @@
 package etec.sp.gov.br.com.example.tdmath.model;
-
+import etec.sp.gov.br.com.example.tdmath.model.Mapa;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -91,32 +92,84 @@ public class Banco extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS conquistaUser");
         onCreate(db);
     }
-    private void OnInit(SQLiteDatabase db){
+    private void OnInit(SQLiteDatabase db) {
         // iniciando multipla transação de dados
         // ideal para evitar lentidão, basicamente fazendo um unico acesso ao banco
         // ao invés de um para cada inserção
+
         db.beginTransaction();
         try { // tentar codigo
-            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('soma', 'imgmap1');");
-            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('subtracao', 'imgmap2');");
-            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('soma-subtracao', 'imgmap3');");
-            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('memorizacao', 'imgmap4');"); // tabuada
-            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('multiplicacao', 'imgmap5');");
-            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('divisao', 'imgmap6');");
-            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('soma-subtracao-mult', 'imgmap7');");
-            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('mult-div', 'imgmap8');");
-            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('fracao', 'imgmap9');");
-            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('relacoes', 'imgmap10');");
-            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('numeros-prim', 'imgmap11');");
-            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('geometria', 'imgmap12');");
-            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('junta', 'imgmap13');"); // combinações de calculos
-            db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('prova', 'imgmap14');"); // revisão final
-
+            inserirMp(db);
+            inserirNvs(db);
+            inserirOpr(db);
             db.setTransactionSuccessful();
         } catch (SQLException e) { //tratar erro
             throw new RuntimeException(e);
         } finally { // ação que sempre acontece
             db.endTransaction(); // fecha e envia o acesso ao banco
+        }
+    }
+    private void inserirMp(SQLiteDatabase db){
+        db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('soma', 'imgmap1');");
+        db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('subtracao', 'imgmap2');");
+        db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('multiplicacao', 'imgmap5');");
+        db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('divisao', 'imgmap6');");
+        db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('relacoes', 'imgmap10');");
+        db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('geometria', 'imgmap12');");
+        db.execSQL("INSERT INTO mapa(nome,ImgUrlMap) VALUES('prova', 'imgmap14');"); // revisão final
+    }
+    private void inserirNvs(SQLiteDatabase db){
+        // o raw Query exige colocar sql como string direto para consultas mais completas
+        Cursor mps = db.rawQuery("SELECT COUNT(*) FROM mapa", null);
+        int Ttl = 0;
+
+        // percorrer itens
+        if (mps.moveToFirst()){
+            Ttl = mps.getInt(0);// começar a contar do index 0
+            mps.close();
+        }
+        int[] pont = {
+                100, 150, 200, 200, 250, 350
+        };
+        for (int i = 1; i <= Ttl; i++) {
+            for (int j = 0; j < pont.length; j++) {
+                db.execSQL("INSERT INTO nivel(fkIdMap, pontuacao) VALUES(" + i + ","+ pont[j] + ");");
+            }
+        }
+    }
+    private void inserirOpr(SQLiteDatabase db) {
+        Cursor mps = db.rawQuery("SELECT COUNT(*) FROM mapa", null);
+        int TtlMp = 0;
+
+        if (mps.moveToFirst()) {
+            TtlMp = mps.getInt(0);
+        }
+        mps.close();
+
+        for (int i = 1; i <= TtlMp; i++) { // cada mapa
+            Cursor nvs = db.rawQuery("SELECT idNivel FROM nivel WHERE fkIdMap = ?", new String[]{String.valueOf(i)});
+
+            String[] calcs;
+            switch(i) {
+                case 1: calcs = new String[]{ "+" }; break;
+                case 2: calcs = new String[]{ "-" }; break;
+                case 3: calcs = new String[]{ "*" }; break;
+                case 4: calcs = new String[]{ "/" }; break;
+                case 5: calcs = new String[]{ "<", ">" }; break;
+                case 6: calcs = new String[]{ "geo" }; break;
+                case 7: calcs = new String[]{ "+","-","*","/","<",">","geo" }; break;
+                default: calcs = new String[0]; break;
+            }
+
+            if (nvs.moveToFirst()) {
+                do {
+                    int idNivel = nvs.getInt(0);
+                    for (String op : calcs) {
+                        db.execSQL("INSERT INTO operacaoNivel(fkIdNivel, operacao) VALUES(" + idNivel + ", '" + op + "');");
+                    }
+                } while (nvs.moveToNext());
+            }
+            nvs.close();
         }
     }
 }

@@ -20,10 +20,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import etec.sp.gov.br.com.example.tdmath.R;
+import etec.sp.gov.br.com.example.tdmath.controller.BaseActivity;
 import etec.sp.gov.br.com.example.tdmath.controller.UserController;
 import etec.sp.gov.br.com.example.tdmath.model.Banco;
 
-public class Cadastro extends AppCompatActivity {
+public class Cadastro extends BaseActivity {
     Button BtnCadc, BtnVolc;
     EditText edtUser, edtEmail, edtSenha, edtCSenha;
     private SQLiteDatabase db;
@@ -113,5 +114,9 @@ public class Cadastro extends AppCompatActivity {
                 }
             }
         });
+    }
+    protected int getcodeAct() {
+        // manda o codigo desta activity
+        return 1; // MainActivity toca música 1
     }
 }

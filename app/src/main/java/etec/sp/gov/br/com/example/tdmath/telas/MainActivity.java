@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,10 +19,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import etec.sp.gov.br.com.example.tdmath.R;
+import etec.sp.gov.br.com.example.tdmath.controller.BaseActivity;
 import etec.sp.gov.br.com.example.tdmath.controller.UserController;
 import etec.sp.gov.br.com.example.tdmath.model.Banco;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     ImageButton BtnJogar,BtnOpt;
     private SQLiteDatabase db;
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
         UserController user = new UserController(getBaseContext());
 
         SharedPreferences sharedPref = getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
@@ -72,5 +75,10 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(TelaOpt);
             }
         });
+    }
+
+    protected int getcodeAct() {
+        // manda o codigo desta activity
+        return 1; // MainActivity toca música 1
     }
 }

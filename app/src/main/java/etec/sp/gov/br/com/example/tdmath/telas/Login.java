@@ -22,12 +22,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import etec.sp.gov.br.com.example.tdmath.controller.BaseActivity;
 import etec.sp.gov.br.com.example.tdmath.controller.UserController;
 import etec.sp.gov.br.com.example.tdmath.model.Banco;
 import etec.sp.gov.br.com.example.tdmath.R;
 import etec.sp.gov.br.com.example.tdmath.model.Mapa;
 
-public class Login extends AppCompatActivity {
+public class Login extends BaseActivity {
     private SQLiteDatabase db;
     private Banco criabd = new Banco(this);
     Button BtnLog, BtnCad;
@@ -105,4 +106,9 @@ public class Login extends AppCompatActivity {
             }
         });
     }
+    protected int getcodeAct() {
+        // manda o codigo desta activity
+        return 1; // MainActivity toca música 1
+    }
+
 }

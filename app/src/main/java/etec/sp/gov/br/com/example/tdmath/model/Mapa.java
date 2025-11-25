@@ -1,5 +1,11 @@
 package etec.sp.gov.br.com.example.tdmath.model;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
 public class Mapa {
     private int idMapa;
     private String nome;

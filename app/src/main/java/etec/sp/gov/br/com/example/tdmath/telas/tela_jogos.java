@@ -14,8 +14,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import etec.sp.gov.br.com.example.tdmath.R;
+import etec.sp.gov.br.com.example.tdmath.controller.BaseActivity;
+import etec.sp.gov.br.com.example.tdmath.controller.WebViewInterface;
 
-public class tela_jogos extends AppCompatActivity {
+public class tela_jogos extends BaseActivity {
     WebView GameView;
     Button btnVoltar, btnPause;
     @Override
@@ -30,14 +32,19 @@ public class tela_jogos extends AppCompatActivity {
         });
         // Pegando a referência do WebView
         GameView = findViewById(R.id.GameView);
-        btnPause = findViewById(R.id.btnVoltar);
-        btnVoltar = findViewById(R.id.btnPause);
+        btnPause = findViewById(R.id.btnPause);
+        btnVoltar = findViewById(R.id.btnVoltar);
 
-        WebSettings webSettings = GameView.getSettings();
-        webSettings.setJavaScriptEnabled(true);// Js
-        webSettings.setAllowFileAccess(true);// Acessar arquivos
-        webSettings.setAllowFileAccessFromFileURLs(true);// Acessar Arquivos via Url
-        GameView.loadUrl("file:///android_asset/PerArea/pa.html");
+        WebSettings confTela = GameView.getSettings();
+        confTela.setJavaScriptEnabled(true);// Js
+        confTela.setAllowFileAccess(true);// Acessar arquivos
+        confTela.setAllowFileAccessFromFileURLs(true);// Acessar Arquivos via Url
+
+        //adicionando a interface java da WVinterface a esta activity
+        GameView.addJavascriptInterface(new WebViewInterface(this), "Android");
+
+
+        GameView.loadUrl("file:///android_asset/GAME_DOS_CABOS/cabo.html");
 
         btnVoltar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,6 +61,10 @@ public class tela_jogos extends AppCompatActivity {
             }
         });
 
+    }
+    protected int getcodeAct() {
+        // manda o codigo desta activity
+        return 7; // MainActivity toca música 1
     }
 
 }
