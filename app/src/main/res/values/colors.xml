@@ -4,4 +4,7 @@
     <color name="white">#FFFFFF</color>
     <color name="blue">#246090</color>
     <color name="roxo">#312285</color>
+    <color name="amarelo">#f9d012</color>
+    <color name="azulescuro">#04041f</color>
+    <color name="azulclaro">#3458DB</color>
 </resources>

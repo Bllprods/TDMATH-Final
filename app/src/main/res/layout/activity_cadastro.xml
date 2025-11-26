@@ -23,7 +23,7 @@
     <ImageView
         android:id="@+id/imageView4"
         android:layout_width="147dp"
-        android:layout_height="182dp"
+        android:layout_height="150dp"
         android:background="@drawable/icone_astronalta_foguete"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -95,19 +95,26 @@
 
     <Button
         android:id="@+id/btnCadC"
-        android:layout_width="250dp"
+        android:layout_width="200dp"
         android:layout_height="50dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="@color/amarelo"
+        android:textColor="@color/black"
         android:text="Cadastrar"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edtTxtContSenha" />
+        app:layout_constraintTop_toBottomOf="@id/edtTxtContSenha"
+        app:strokeColor="#0000" />
+
 
     <Button
         android:id="@+id/btnVolc"
-        android:layout_width="250dp"
+        android:layout_width="200dp"
         android:layout_height="50dp"
-        android:layout_marginTop="92dp"
+        android:layout_marginTop="76dp"
+        android:backgroundTint="@color/amarelo"
+        android:textColor="@color/black"
         android:text="Voltar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"

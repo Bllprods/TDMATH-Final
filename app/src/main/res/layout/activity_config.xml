@@ -29,6 +29,7 @@
         android:background="@drawable/divs"
         android:alpha="0.98"
         android:orientation="vertical"
+
         android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -114,6 +115,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10sp"
                 android:text="Voltar"
+                android:backgroundTint="@color/amarelo"
+                android:textColor="@color/black"
                 android:padding="2dp"/>
 
             <Button
@@ -122,6 +125,8 @@
                 android:minWidth="120dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="10sp"
+                android:backgroundTint="@color/amarelo"
+                android:textColor="@color/black"
                 android:text="Confirmar"
                 android:padding="2dp"/>
         </LinearLayout>
@@ -137,10 +142,10 @@
     <ImageView
         android:layout_width="96dp"
         android:layout_height="99dp"
-        android:layout_marginTop="560dp"
+        android:layout_marginTop="592dp"
         android:background="@drawable/icone_astronalta_foguete"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
