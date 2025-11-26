@@ -13,7 +13,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
@@ -43,28 +42,23 @@ public class MenuFases extends BaseActivity {
             return insets;
         });
 
-        /* aplicando fonte atual */
         SharedPreferences sharedPref = getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
         int fontSize = sharedPref.getInt("font_size", 20);
         Config.updateFontSize(findViewById(R.id.main), fontSize);
 
         Toolbar header = findViewById(R.id.header);
         setSupportActionBar(header);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        }
 
         container = findViewById(R.id.LnLm);
 
         MapController map = new MapController(this);
         ArrayList<Mapa> mapas = map.consultaMapas();
 
-        int index = 0; // para zig-zag
+        int index = 0;
 
         for (Mapa m : mapas) {
-            final Mapa mapaLocal = m; // evitar problemas com closure
+            final Mapa mapaLocal = m;
 
-            // container do mundo (vertical)
             LinearLayout containerMini = new LinearLayout(this);
             LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -72,37 +66,51 @@ public class MenuFases extends BaseActivity {
             );
             containerMini.setOrientation(LinearLayout.VERTICAL);
 
-            int marginDp = 8;
-            int marginPx = dpToPx(marginDp);
-            linearParams.setMargins(marginPx * 2, marginPx * 2, marginPx * 2, marginPx * 2);
+            int marginPx = dpToPx(16);
+            linearParams.setMargins(marginPx, marginPx, marginPx, marginPx);
 
-            if (index % 2 == 0) {
-                linearParams.gravity = Gravity.START;
-            } else {
-                linearParams.gravity = Gravity.END;
-            }
+            linearParams.gravity = (index % 2 == 0) ? Gravity.START : Gravity.END;
             containerMini.setLayoutParams(linearParams);
 
-            // Botão do mundo (imagem)
+            // ============================
+            // BOTÃO DO MUNDO
+            // ============================
+
             ImageButton MundoBtn = new ImageButton(this);
-            int recursoImg = getResources().getIdentifier(mapaLocal.getImgUrlMap(), "drawable", getPackageName());
-            int sizePx = dpToPx(140); // ajuste o tamanho em dp
+
+            // GARANTIR nome certo da imagem
+            String nomeImg = "imgmap" + mapaLocal.getIdMapa();
+
+            int recursoImg = getResources().getIdentifier(
+                    nomeImg,
+                    "drawable",
+                    getPackageName()
+            );
+
+            int sizePx = dpToPx(140);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(sizePx, sizePx);
             params.gravity = Gravity.CENTER_HORIZONTAL;
-            params.setMargins(dpToPx(16), dpToPx(8), dpToPx(16), dpToPx(12));
-            MundoBtn.setId(mapaLocal.getIdMapa());
-            if (recursoImg != 0) {
-                MundoBtn.setBackgroundResource(recursoImg);
-            } else {
-                MundoBtn.setBackgroundResource(android.R.color.darker_gray); // fallback
-            }
-            MundoBtn.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
             MundoBtn.setLayoutParams(params);
-            MundoBtn.setClickable(false); // deixa o containerMini tratar do clique
+            MundoBtn.setBackground(null);
+
+            if (recursoImg != 0) {
+                MundoBtn.setImageResource(recursoImg);
+            } else {
+                MundoBtn.setImageResource(android.R.color.transparent);
+            }
+
+            MundoBtn.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            MundoBtn.setAdjustViewBounds(true);
+
+            MundoBtn.setClickable(false);
 
             containerMini.addView(MundoBtn);
 
-            // container dos níveis (inicialmente oculto)
+            // ============================
+            // FASES
+            // ============================
+
             LinearLayout ctFases = new LinearLayout(this);
             ctFases.setOrientation(LinearLayout.VERTICAL);
             LinearLayout.LayoutParams lpFases = new LinearLayout.LayoutParams(
@@ -111,13 +119,10 @@ public class MenuFases extends BaseActivity {
             );
             lpFases.setMargins(dpToPx(8), dpToPx(4), dpToPx(8), dpToPx(8));
             ctFases.setLayoutParams(lpFases);
-            ctFases.setVisibility(View.GONE); // escondido até expandir
+            ctFases.setVisibility(View.GONE);
 
-            int minHeightPx = dpToPx(440);
-            ctFases.setMinimumHeight(minHeightPx);
-
-            // POPULA níveis a partir de mapaLocal.getNiveis()
             List<nivel> niveis = mapaLocal.getNiveis();
+
             if (niveis == null || niveis.isEmpty()) {
                 TextView vazio = new TextView(this);
                 vazio.setText("Nenhum nível disponível");
@@ -127,6 +132,7 @@ public class MenuFases extends BaseActivity {
                 for (nivel nv : niveis) {
                     LinearLayout linhaNivel = new LinearLayout(this);
                     linhaNivel.setOrientation(LinearLayout.HORIZONTAL);
+
                     LinearLayout.LayoutParams lpLinha = new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -136,18 +142,14 @@ public class MenuFases extends BaseActivity {
 
                     ImageButton levelBtn = new ImageButton(this);
                     LinearLayout.LayoutParams lpBtn = new LinearLayout.LayoutParams(dpToPx(56), dpToPx(56));
-                    lpBtn.setMargins(0, 0, dpToPx(8), 0);
                     levelBtn.setLayoutParams(lpBtn);
-                    levelBtn.setBackgroundResource(R.drawable.fasescir); // coloque um ícone em drawable
+                    levelBtn.setBackgroundResource(R.drawable.fasescir);
                     levelBtn.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    levelBtn.setClickable(true);
 
                     TextView levelTxt = new TextView(this);
                     levelTxt.setText("Fase " + nv.getIdNivel());
                     levelTxt.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize - 2);
-                    levelTxt.setGravity(Gravity.CENTER_VERTICAL);
 
-                    // clique no nível -> abre a tela do jogo com extras
                     levelBtn.setOnClickListener(v -> {
                         Intent fase = new Intent(MenuFases.this, tela_jogos.class);
                         fase.putExtra("idMapa", mapaLocal.getIdMapa());
@@ -161,16 +163,10 @@ public class MenuFases extends BaseActivity {
                 }
             }
 
-            // adiciona ctFases ao containerMini (mas oculto por padrão)
             containerMini.addView(ctFases);
 
-            // clique no mundo: expande/contrai os níveis
             containerMini.setOnClickListener(v -> {
-                if (ctFases.getVisibility() == View.GONE) {
-                    ctFases.setVisibility(View.VISIBLE);
-                } else {
-                    ctFases.setVisibility(View.GONE);
-                }
+                ctFases.setVisibility(ctFases.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
             });
 
             container.addView(containerMini);
@@ -186,11 +182,14 @@ public class MenuFases extends BaseActivity {
     }
 
     protected int getcodeAct() {
-        return 5; // MainActivity toca música 1
+        return 5;
     }
 
-    // helper dp->px
     private int dpToPx(int dp) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
+        return (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                dp,
+                getResources().getDisplayMetrics()
+        );
     }
 }

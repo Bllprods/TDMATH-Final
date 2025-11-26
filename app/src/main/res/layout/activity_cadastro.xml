@@ -53,7 +53,7 @@
         android:background="@drawable/input"
         android:ellipsize="middle"
         android:ems="10"
-        android:hint="Nome de usuario"
+        android:hint="Email"
         android:inputType="text"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"

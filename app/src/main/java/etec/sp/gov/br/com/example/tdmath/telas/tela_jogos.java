@@ -17,7 +17,7 @@ import etec.sp.gov.br.com.example.tdmath.R;
 
 public class tela_jogos extends AppCompatActivity {
     WebView GameView;
-    Button btnVoltar, btnPause;
+    Button btnVoltar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,8 +30,8 @@ public class tela_jogos extends AppCompatActivity {
         });
         // Pegando a referência do WebView
         GameView = findViewById(R.id.GameView);
-        btnPause = findViewById(R.id.btnVoltar);
-        btnVoltar = findViewById(R.id.btnPause);
+
+        btnVoltar = findViewById(R.id.btnVoltar);
 
         WebSettings webSettings = GameView.getSettings();
         webSettings.setJavaScriptEnabled(true);// Js
@@ -47,13 +47,7 @@ public class tela_jogos extends AppCompatActivity {
             }
         });
 
-        btnPause.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
+        }
 
     }
-
-}
